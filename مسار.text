@@ -261,3 +261,19 @@ Relevant persisted Supabase tables:
 **Independent 500-case strict result: 500/500 NO_TRADE because the full requested historical evidence stack is not available point-in-time for this window.**
 
 This is intentionally a validity-preserving result. Any LONG/SHORT or profitability statistic produced from these 500 timestamps without reconstructing the missing historical layers would violate the requested full-data and no-look-ahead conditions.
+
+
+## 11. PIT Audit Dataset Persisted
+
+A dedicated Supabase table `public.scalp_omega_pit_cases` was created and populated for this run.
+
+- Run ID: `SCALP-OMEGA-PIT-500-2026-09-24`
+- Cases persisted: 500
+- Time range: 2026-09-06 22:30 UTC → 2026-09-12 03:15 UTC
+- NO_TRADE: 500
+- Full-stack-complete: 0
+- Policy: fail-closed / no-look-ahead
+
+The table records the point-in-time timestamp, market/cross-exchange coverage flags, each required intelligence-layer readiness flag, the decision, reason, and provenance metadata. This makes the failure-to-trade decision independently auditable in Supabase rather than relying only on narrative output.
+
+The next performance-grade phase requires populating the missing historical layers (35 indicators, microstructure, TITAN, derivatives/liquidations, macro, on-chain and historical news) with immutable as-of timestamps. Until that is done, the system must continue to return NO_TRADE for a strict full-stack historical test.
